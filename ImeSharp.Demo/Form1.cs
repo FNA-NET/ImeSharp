@@ -38,7 +38,7 @@ namespace ImeSharp.Demo
             textBoxResult.Text = _inputContent;
         }
 
-        private void OnTextComposition(IMEString compositionText, int cursorPosition, IMEString[] candidateList, int candidatePageStart, int candidatePageSize, int candidateSelection)
+        private void OnTextComposition(string compositionText, int cursorPosition, string[] candidateList, int candidatePageStart, int candidatePageSize, int candidateSelection)
         {
             var str = compositionText.ToString();
             str = str.Insert(cursorPosition, "|");

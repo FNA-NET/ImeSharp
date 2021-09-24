@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 using System.Globalization;
 using System.Diagnostics;
 using ImeSharp.Native;
+using IMEString = Microsoft.Xna.Framework.IMEString;
 
 namespace ImeSharp
 {
@@ -245,6 +246,8 @@ namespace ImeSharp
 
         private void IMENotify(int WParam)
         {
+            if (!InputMethod.Enabled) return;
+
             switch (WParam)
             {
                 case NativeMethods.IMN_OPENCANDIDATE:
@@ -273,9 +276,6 @@ namespace ImeSharp
             UpdateCandidates();
             // Send event on candidate updates
             InputMethod.OnTextComposition(this, new IMEString(_compositionStringHandler.Values, _compositionStringHandler.Count), _compositionCursorHandler.Value);
-
-            if (InputMethod.CandidateList != null)
-                ArrayPool<IMEString>.Shared.Return(InputMethod.CandidateList);
         }
 
         private unsafe void UpdateCandidates()
@@ -293,13 +293,11 @@ namespace ImeSharp
 
                 selection -= pageStart;
 
-                IMEString[] candidates = ArrayPool<IMEString>.Shared.Rent(pageSize);
-
                 int i, j;
                 for (i = pageStart, j = 0; i < cList->dwCount && j < pageSize; i++, j++)
                 {
                     int sOffset = Marshal.ReadInt32(pointer, 24 + 4 * i);
-                    candidates[j] = new IMEString(pointer + sOffset);
+                    InputMethod.CandidateList[j] = new IMEString(pointer + sOffset);
                 }
 
                 //Debug.WriteLine("IMM========IMM");
@@ -308,10 +306,8 @@ namespace ImeSharp
                 //    Debug.WriteLine("  {2}{0}.{1}", k + 1, candidates[k], k == selection ? "*" : "");
                 //Debug.WriteLine("IMM++++++++IMM");
 
-                InputMethod.CandidatePageStart = pageStart;
                 InputMethod.CandidatePageSize = pageSize;
                 InputMethod.CandidateSelection = selection;
-                InputMethod.CandidateList = candidates;
 
                 Marshal.FreeHGlobal(pointer);
             }
@@ -324,12 +320,16 @@ namespace ImeSharp
 
         private void IMEStartComposion(int lParam)
         {
+            if (!InputMethod.Enabled) return;
+
             InputMethod.OnTextCompositionStarted(this);
             ClearComposition();
         }
 
         private void IMEComposition(int lParam)
         {
+            if (!InputMethod.Enabled) return;
+
             if (_compositionStringHandler.Update(lParam))
             {
                 _compositionCursorHandler.Update();
@@ -340,6 +340,8 @@ namespace ImeSharp
 
         private void IMEEndComposition(int lParam)
         {
+            if (!InputMethod.Enabled) return;
+
             InputMethod.ClearCandidates();
             ClearComposition();
 
