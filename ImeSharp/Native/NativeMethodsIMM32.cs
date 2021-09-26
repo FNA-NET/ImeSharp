@@ -97,8 +97,8 @@ namespace ImeSharp.Native
         {
             public int dwIndex;
             public int dwStyle;
-            public TsfSharp.Point ptCurrentPos;
-            public TsfSharp.Rect rcArea;
+            public Point ptCurrentPos;
+            public Rect rcArea;
         }
 
         // COMPOSITIONFORM structures
@@ -106,8 +106,8 @@ namespace ImeSharp.Native
         public struct COMPOSITIONFORM
         {
             public int dwStyle;
-            public TsfSharp.Point ptCurrentPos;
-            public TsfSharp.Rect rcArea;
+            public Point ptCurrentPos;
+            public Rect rcArea;
         }
 
         [DllImport("imm32.dll", SetLastError = true)]

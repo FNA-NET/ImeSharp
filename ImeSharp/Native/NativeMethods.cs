@@ -4,6 +4,26 @@ using System.Runtime.InteropServices;
 
 namespace ImeSharp.Native
 {
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Point
+    {
+        public int X;
+
+        public int Y;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct Rect
+    {
+        public int Left;
+
+        public int Top;
+
+        public int Right;
+
+        public int Bottom;
+    }
+
     public partial class NativeMethods
     {
         #region Constants
@@ -108,10 +128,10 @@ namespace ImeSharp.Native
         private static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr dwNewLong);
 
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool GetWindowRect(IntPtr hwnd, out TsfSharp.Rect lpRect);
+        public static extern bool GetWindowRect(IntPtr hwnd, out Rect lpRect);
 
         [DllImport("user32", ExactSpelling = true, SetLastError = true)]
-        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref TsfSharp.Rect rect, [MarshalAs(UnmanagedType.U4)] int cPoints);
+        public static extern int MapWindowPoints(IntPtr hWndFrom, IntPtr hWndTo, ref Rect rect, [MarshalAs(UnmanagedType.U4)] int cPoints);
 
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
